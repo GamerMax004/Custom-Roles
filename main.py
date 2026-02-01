@@ -7,7 +7,23 @@ from datetime import datetime
 from typing import Optional, List
 import os
 from dotenv import load_dotenv
+from flask import Flask
+from threading import Thread
 
+# Flask-App für Render Keep-Alive
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+    
 # Lade Umgebungsvariablen
 load_dotenv()
 
@@ -1005,7 +1021,7 @@ if __name__ == "__main__":
     token = os.getenv('DISCORD_TOKEN')
 
     if not token:
-        print("Custum Roles by Custom Discord Development")
+        print("Custum Roles ist online.")
         print("=" * 40)
         token = input("Bot-Token: ").strip()
 
@@ -1015,6 +1031,7 @@ if __name__ == "__main__":
 
     try:
         print("🚀 Starte Bot...")
+        keep_alive()  # <-- DIESE ZEILE HINZUFÜGEN
         bot.run(token)
     except Exception as e:
         logger.error(f"❌ Fehler: {e}")
